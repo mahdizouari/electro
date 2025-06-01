@@ -1,0 +1,29 @@
+[0;1;32m●[0m mariadb.service - MariaDB 10.11 database server
+     Loaded: loaded (]8;;file://mehdis-computer/usr/lib/systemd/system/mariadb.service/usr/lib/systemd/system/mariadb.service]8;;; [0;1;32menabled[0m; preset: [0;1;38:5:185mdisabled[0m)
+    Drop-In: /usr/lib/systemd/system/service.d
+             └─]8;;file://mehdis-computer/usr/lib/systemd/system/service.d/10-timeout-abort.conf10-timeout-abort.conf]8;;, ]8;;file://mehdis-computer/usr/lib/systemd/system/service.d/50-keep-warm.conf50-keep-warm.conf]8;;
+     Active: [0;1;32mactive (running)[0m since Sat 2025-05-31 23:37:26 CET; 1h 1min ago
+ Invocation: 0faacdae822e4d40829031b8dd03f198
+       Docs: ]8;;man:mariadbd(8)man:mariadbd(8)]8;;
+             ]8;;https://mariadb.com/kb/en/library/systemd/https://mariadb.com/kb/en/library/systemd/]8;;
+    Process: 1526 ExecStartPre=/usr/libexec/mariadb-check-socket (code=exited, status=0/SUCCESS)
+    Process: 1603 ExecStartPre=/usr/libexec/mariadb-prepare-db-dir mariadb.service (code=exited, status=0/SUCCESS)
+    Process: 1831 ExecStartPost=/usr/libexec/mariadb-check-upgrade (code=exited, status=0/SUCCESS)
+   Main PID: 1690 (mariadbd)
+     Status: "[0;1;36mTaking your SQL requests now...[0m"
+      Tasks: 10[0;38;5;245m (limit: 27895)[0m
+     Memory: 125M (peak: 129.3M)
+        CPU: 1.144s
+     CGroup: /system.slice/mariadb.service
+             └─[0;38;5;245m1690 /usr/libexec/mariadbd --basedir=/usr[0m
+
+Jun 01 00:35:36 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:36 43 [Warning] Access denied for user 'pma'@'localhost' (using password: NO)
+Jun 01 00:35:36 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:36 44 [Warning] Access denied for user 'root'@'localhost'
+Jun 01 00:35:39 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:39 45 [Warning] Access denied for user 'pma'@'localhost' (using password: NO)
+Jun 01 00:35:39 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:39 46 [Warning] Access denied for user 'root'@'localhost'
+Jun 01 00:35:40 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:40 47 [Warning] Access denied for user 'pma'@'localhost' (using password: NO)
+Jun 01 00:35:40 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:40 48 [Warning] Access denied for user 'root'@'localhost'
+Jun 01 00:35:41 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:41 49 [Warning] Access denied for user 'pma'@'localhost' (using password: NO)
+Jun 01 00:35:41 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:41 50 [Warning] Access denied for user 'root'@'localhost'
+Jun 01 00:35:42 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:42 51 [Warning] Access denied for user 'pma'@'localhost' (using password: NO)
+Jun 01 00:35:42 mehdis-computer mariadbd[1690]: 2025-06-01  0:35:42 52 [Warning] Access denied for user 'root'@'localhost'

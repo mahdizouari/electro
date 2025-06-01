@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		 <!-- The above 3 meta tags *must* come * in the head; any other head content must come *after* these tags -->
+
+		<title>Electro Shop</title>
+
+		<!-- Google font -->
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+		<!-- Bootstrap -->
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+
+		<!-- Slick -->
+		<link type="text/css" rel="stylesheet" href="css/slick.css"/>
+		<link type="text/css" rel="stylesheet" href="css/slick-theme.css"/>
+
+		<!-- nouislider -->
+		<link type="text/css" rel="stylesheet" href="css/nouislider.min.css"/>
+
+		<!-- Font Awesome Icon -->
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+
+		<!-- Custom stlylesheet -->
+		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    </head>
+	<body>
+<?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
+
+<?php
+session_start();
+require '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
+
+// Check admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../pages/login.php');
+    exit();
+}
+
+$id = intval($_GET['id'] ?? 0);
+if (!$id) {
+    header('Location: /electro/pages/dashboard.php');
+    exit();
+}
+
+// Fetch product
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+$stmt->execute([$id]);
+$product = $stmt->fetch();
+
+if (!$product) {
+    header('Location: dashboard.php');
+    exit();
+}
+
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $price = floatval($_POST['price'] ?? 0);
+
+    if (!$name || $price <= 0) {
+        $error = "Name and valid price are required.";
+    } else {
+        $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$name, $description, $price, $id]);
+        header('Location: /electro/pages/dashboard.php');
+        exit();
+    }
+}
+?>
+
+
+<title>Edit Product</title>
+<style>
+
+
+h1 {
+  color: #d10024;
+  font-weight: 700;
+  font-size: 3rem;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+#edit-product-form {
+  background: #ffffff;
+  max-width: 480px;
+  margin: 0 auto 30px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+label {
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.4rem;
+  color: #444;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1.4rem;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: #d10024;
+  outline: none;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button[type="submit"] {
+  background-color: #d10024;
+  color: white;
+  border: none;
+  padding: 14px 0;
+  font-size: 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #a3001b;
+}
+
+.error {
+  max-width: 480px;
+  margin: 0 auto 20px auto;
+  background-color: #ffe0e0;
+  border: 1px solid #d10024;
+  color: #a3001b;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+p a {
+  display: block;
+  max-width: 480px;
+  margin: 0 auto;
+  color: #d10024;
+  text-decoration: none;
+  font-weight: 1000;
+  transition: color 0.3s ease;
+  text-align: center;
+}
+
+p a:hover {
+  color: #a3001b;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Edit Product #<?= $product['id'] ?></h1>
+<?php if ($error): ?>
+<p class="error"><?= htmlspecialchars($error) ?></p>
+<?php endif; ?>
+
+<form method="post" id="edit-product-form">
+  <label>Name:
+    <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? $product['name']) ?>">
+  </label>
+
+  <label>Description:
+    <textarea name="description"><?= htmlspecialchars($_POST['description'] ?? $product['description']) ?></textarea>
+  </label>
+
+  <label>Price (TND):
+    <input type="number" step="0.01" name="price" required value="<?= htmlspecialchars($_POST['price'] ?? $product['price']) ?>">
+  </label>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+<p><a href="/electro/pages/dashboard.php">&larr; Back to Dashboard</a></p>
+
+
+
+
+
+
+<!-- jQuery Plugins -->
+<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/slick.min.js"></script>
+		<script src="js/nouislider.min.js"></script>
+		<script src="js/jquery.zoom.min.js"></script>
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
+
