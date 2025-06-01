@@ -54,7 +54,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 // Fetch all products
-$stmt = $pdo->query("SELECT id, name, price, quantity, image, created_at FROM products ORDER BY created_at DESC");
+$stmt = $pdo->query("SELECT id, name, price, quantity, image, category, created_at FROM products ORDER BY created_at DESC");
 $products = $stmt->fetchAll();
 
 ?>
@@ -76,6 +76,7 @@ $products = $stmt->fetchAll();
       <th>Name</th>
       <th>Price (TND)</th>
       <th>Quantity</th>
+      <th>Category</th>
       <th>Created At</th>
       <th>Actions</th>
     </tr>
@@ -96,6 +97,7 @@ $products = $stmt->fetchAll();
         <td><?= htmlspecialchars($p['name']) ?></td>
         <td><?= htmlspecialchars(number_format($p['price'], 2)) ?></td>
         <td><?= htmlspecialchars($p['quantity']) ?></td>
+        <td><?= htmlspecialchars($p['category'] ?? 'No category') ?></td>
         <td><?= htmlspecialchars($p['created_at']) ?></td>
         <td>
           <a href="/electro/pages/crud/product_edit.php?id=<?= $p['id'] ?>" class="button">Edit</a>

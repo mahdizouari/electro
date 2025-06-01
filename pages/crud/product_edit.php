@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $price = floatval($_POST['price'] ?? 0);
   $quantity = intval($_POST['quantity'] ?? 1);
   $image = $_FILES['image'] ?? null;
+  $category = trim($_POST['category'] ?? '');
 
   if (!$name || $price <= 0) {
       $error = "Name and valid price are required.";
@@ -101,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       if (!$error) {
-          $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, quantity = ?, image = ?, updated_at = NOW() WHERE id = ?");
-          $stmt->execute([$name, $description, $price, $quantity, $imagePath, $id]);
+        $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, quantity = ?, category = ?, image = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$name, $description, $price, $quantity, $category, $imagePath, $id]);
           header('Location: /electro');
           exit();
       }
@@ -236,6 +237,19 @@ p a:hover {
   <label>Quantity:
     <input type="number" name="quantity" required value="<?= htmlspecialchars($_POST['quantity'] ?? $product['quantity']) ?>">
   </label>
+  <label>Category:
+  <br><br>
+  <select name="category" required>
+    <?php
+      $categories = ['Laptops', 'Smartphones', 'Cameras', 'Accessories'];
+      $selectedCategory = $_POST['category'] ?? $product['category'] ?? '';
+      foreach ($categories as $cat) {
+          $selected = ($cat === $selectedCategory) ? 'selected' : '';
+          echo "<option value=\"$cat\" $selected>$cat</option>";
+      }
+    ?>
+  </select>
+</label>
 
   <label>Image:
     <?php if (!empty($product['image'])): ?>

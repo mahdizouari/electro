@@ -69,170 +69,65 @@
 					<!-- Products tab & slick -->
 					<div class="col-md-12">
 						<div class="row">
-							<div class="products-tabs">
-								<!-- tab -->
-								<div id="tab1" class="tab-pane active">
-									<div class="products-slick" data-nav="#slick-nav-1">
-									<div class="product">
-										<div class="product-img">
-											<img src="<?= htmlspecialchars($product['image_path'] ?: './img/default-product.png') ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-											<div class="product-label">
+							<?php
+							require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
+							$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+							$products = $stmt->fetchAll();
+
+							foreach ($products as $product):
+							?>
+							<!-- product -->
+							<div class="col-md-3 col-sm-6 col-xs-12">
+								<div class="product">
+									<div class="product-img">
+										<img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="" style="max-height:200px; object-fit:contain;">
+										<div class="product-label">
 											<?php if (!empty($product['discount'])): ?>
 												<span class="sale">-<?= (int)$product['discount'] ?>%</span>
 											<?php endif; ?>
-											<?php if ($product['is_new']): ?>
+											<?php if (!empty($product['is_new'])): ?>
 												<span class="new">NEW</span>
 											<?php endif; ?>
-											</div>
 										</div>
-										<div class="product-body">
-											<p class="product-category"><?= htmlspecialchars($product['category']) ?></p>
-											<h3 class="product-name"><a href="/product.php?id=<?= $product['id'] ?>"><?= htmlspecialchars($product['name']) ?></a></h3>
-											<h4 class="product-price">
-											$<?= number_format($product['price'], 2) ?>
+									</div>
+									<div class="product-body">
+										<p class="product-category"><?= htmlspecialchars($product['category'] ?? 'Other') ?></p>
+										<h3 class="product-name">
+											<a href="/electro/pages/product_detail.php?id=<?= $product['id'] ?>">
+												<?= htmlspecialchars($product['name']) ?>
+											</a>
+										</h3>
+										<h4 class="product-price">
+											<?= number_format($product['price'], 2) ?> TND
 											<?php if (!empty($product['old_price'])): ?>
-												<del class="product-old-price">$<?= number_format($product['old_price'], 2) ?></del>
+												<del class="product-old-price"><?= number_format($product['old_price'], 2) ?> TND</del>
 											<?php endif; ?>
-											</h4>
-											<div class="product-rating">
-											<?php 
-											$stars = (int)$product['rating'];
-											for ($i=0; $i < 5; $i++): ?>
-												<i class="fa fa-star<?= $i < $stars ? '' : '-o' ?>"></i>
-											<?php endfor; ?>
-											</div>
-											<div class="product-btns">
+										</h4>
+										<div class="product-rating">
+											<?php
+											$rating = (int)($product['rating'] ?? 0);
+											for ($i = 1; $i <= 5; $i++):
+												echo '<i class="fa fa-star' . ($i <= $rating ? '' : '-o') . '"></i>';
+											endfor;
+											?>
+										</div>
+										<div class="product-btns">
 											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
 											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-											</div>
 										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-										</div>
-										</div>
-
-										<!-- /product -->
-
-										<!-- product -->
-										<div class="product">
-											<div class="product-img">
-												<img src="./img/product02.png" alt="">
-												<div class="product-label">
-													<span class="new">NEW</span>
-												</div>
-											</div>
-											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-												<div class="product-rating">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star-o"></i>
-												</div>
-												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-												</div>
-											</div>
-											<div class="add-to-cart">
-												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-											</div>
-										</div>
-										<!-- /product -->
-
-										<!-- product -->
-										<div class="product">
-											<div class="product-img">
-												<img src="./img/product03.png" alt="">
-												<div class="product-label">
-													<span class="sale">-30%</span>
-												</div>
-											</div>
-											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-												<div class="product-rating">
-												</div>
-												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-												</div>
-											</div>
-											<div class="add-to-cart">
-												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-											</div>
-										</div>
-										<!-- /product -->
-
-										<!-- product -->
-										<div class="product">
-											<div class="product-img">
-												<img src="./img/product04.png" alt="">
-											</div>
-											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-												<div class="product-rating">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-												</div>
-											</div>
-											<div class="add-to-cart">
-												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-											</div>
-										</div>
-										<!-- /product -->
-
-										<!-- product -->
-										<div class="product">
-											<div class="product-img">
-												<img src="./img/product05.png" alt="">
-											</div>
-											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-												<div class="product-rating">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-												</div>
-											</div>
-											<div class="add-to-cart">
-												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-											</div>
-										</div>
-										<!-- /product -->
 									</div>
-									<div id="slick-nav-1" class="products-slick-nav"></div>
+									<div class="add-to-cart">
+										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+									</div>
 								</div>
-								<!-- /tab -->
 							</div>
+							<!-- /product -->
+							<?php endforeach; ?>
 						</div>
 					</div>
+
+
 					<!-- Products tab & slick -->
 				</div>
 				<!-- /row -->

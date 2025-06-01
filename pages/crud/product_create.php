@@ -57,9 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = floatval($_POST['price'] ?? 0);
     $quantity = intval($_POST['quantity'] ?? 1);
     $image = $_FILES['image'] ?? null;
+    $category = trim($_POST['category'] ?? '');
 
-    if (!$name || $price <= 0) {
-        $error = "Name and valid price are required.";
+    if (!$name || $price <= 0 || !$category) {
+        $error = "Name and valid price and category are required.";
     } else {
         // ✅ Handle image upload
         $imagePath = '';
@@ -77,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$error) {
             // ✅ Insert into database including quantity and image
-            $stmt = $pdo->prepare("INSERT INTO products (name, description, price, quantity, image, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$name, $description, $price, $quantity, $imagePath]);
+            $stmt = $pdo->prepare("INSERT INTO products (name, description, price, quantity, category, image, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$name, $description, $price, $quantity, $category, $imagePath]);
 
             header('Location: /electro/pages/dashboard.php');
             exit();
@@ -216,6 +217,14 @@ p a:hover {
   <label>Quantity:
     <input type="number" name="quantity" min="0" value="<?= htmlspecialchars($_POST['quantity'] ?? '1') ?>">
   </label>
+  <label for="category">Category:</label>
+    <select name="category" id="category" required>
+        <option value="">--Select Category--</option>
+        <option value="Laptops">Laptops</option>
+        <option value="Smartphones">Smartphones</option>
+        <option value="Cameras">Cameras</option>
+        <option value="Accessories">Accessories</option>
+    </select>
 
   <label>Image:
     <input type="file" name="image" accept="image/*">
