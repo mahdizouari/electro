@@ -61,26 +61,56 @@ $stmt->execute([$id]);
 $product = $stmt->fetch();
 
 if (!$product) {
-    header('Location: dashboard.php');
+    header('Location: /electro/pages/dashboard.php');
     exit();
 }
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $price = floatval($_POST['price'] ?? 0);
+  $name = trim($_POST['name'] ?? '');
+  $description = trim($_POST['description'] ?? '');
+  $price = floatval($_POST['price'] ?? 0);
+  $quantity = intval($_POST['quantity'] ?? 1);
+  $image = $_FILES['image'] ?? null;
 
-    if (!$name || $price <= 0) {
-        $error = "Name and valid price are required.";
-    } else {
-        $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$name, $description, $price, $id]);
-        header('Location: /electro/pages/dashboard.php');
-        exit();
-    }
+  if (!$name || $price <= 0) {
+      $error = "Name and valid price are required.";
+  } else {
+      // Fetch current product to get old image path
+      $stmt = $pdo->prepare("SELECT image FROM products WHERE id = ?");
+      $stmt->execute([$id]);
+      $currentProduct = $stmt->fetch();
+      $oldImagePath = $currentProduct['image'] ?? null;
+
+      // Default to old image if no new upload
+      $imagePath = $oldImagePath;
+
+      // Handle image upload
+      if ($image && $image['tmp_name']) {
+          $filename = 'uploads/' . time() . '_' . basename($image['name']);
+          $destination = '/opt/lampp/htdocs/electro/' . $filename;
+          if (move_uploaded_file($image['tmp_name'], $destination)) {
+              // Delete old image only if new upload is successful
+              if ($oldImagePath && file_exists('/opt/lampp/htdocs/electro/' . $oldImagePath)) {
+                  unlink('/opt/lampp/htdocs/electro/' . $oldImagePath);
+              }
+              $imagePath = $filename;
+          } else {
+              $error = "Failed to upload image.";
+          }
+      }
+
+      if (!$error) {
+          $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, quantity = ?, image = ?, updated_at = NOW() WHERE id = ?");
+          $stmt->execute([$name, $description, $price, $quantity, $imagePath, $id]);
+          header('Location: /electro');
+          exit();
+      }
+  }
 }
+
 ?>
+
 
 
 <title>Edit Product</title>
@@ -190,7 +220,7 @@ p a:hover {
 <p class="error"><?= htmlspecialchars($error) ?></p>
 <?php endif; ?>
 
-<form method="post" id="edit-product-form">
+<form method="post" enctype="multipart/form-data" id="edit-product-form">
   <label>Name:
     <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? $product['name']) ?>">
   </label>
@@ -203,8 +233,20 @@ p a:hover {
     <input type="number" step="0.01" name="price" required value="<?= htmlspecialchars($_POST['price'] ?? $product['price']) ?>">
   </label>
 
+  <label>Quantity:
+    <input type="number" name="quantity" required value="<?= htmlspecialchars($_POST['quantity'] ?? $product['quantity']) ?>">
+  </label>
+
+  <label>Image:
+    <?php if (!empty($product['image'])): ?>
+      <br><img src="/electro/<?= htmlspecialchars($product['image']) ?>" style="max-height:60px;"><br>
+    <?php endif; ?>
+    <input type="file" name="image">
+  </label>
+
   <button type="submit">Save Changes</button>
 </form>
+
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     var_dump($_POST);

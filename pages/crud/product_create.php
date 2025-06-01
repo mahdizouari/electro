@@ -44,7 +44,7 @@
 session_start();
 require '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
-// Check admin
+// Check if admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../pages/login.php');
     exit();
@@ -55,17 +55,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $price = floatval($_POST['price'] ?? 0);
+    $quantity = intval($_POST['quantity'] ?? 1);
+    $image = $_FILES['image'] ?? null;
 
     if (!$name || $price <= 0) {
         $error = "Name and valid price are required.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO products (name, description, price, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->execute([$name, $description, $price]);
-        header('Location: /electro/pages/dashboard.php');
-        exit();
+        // ✅ Handle image upload
+        $imagePath = '';
+        if ($image && $image['tmp_name']) {
+          $filename = 'uploads/' . time() . '_' . basename($image['name']);
+          $destination = '/opt/lampp/htdocs/electro/' . $filename;
+      
+          if (move_uploaded_file($image['tmp_name'], $destination)) {
+              $imagePath = $filename;
+          } else {
+              $error = "Failed to upload image. Check folder permissions.";
+          }
+      }
+      
+
+        if (!$error) {
+            // ✅ Insert into database including quantity and image
+            $stmt = $pdo->prepare("INSERT INTO products (name, description, price, quantity, image, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$name, $description, $price, $quantity, $imagePath]);
+
+            header('Location: /electro/pages/dashboard.php');
+            exit();
+        }
     }
 }
 ?>
+
 
 
 <title>Add New Product</title>
@@ -179,7 +200,7 @@ p a:hover {
 <p class="error"><?= htmlspecialchars($error) ?></p>
 <?php endif; ?>
 
-<form method="post" id="edit-product-form">
+<form method="post" id="edit-product-form" enctype="multipart/form-data">
   <label>Name:
     <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
   </label>
@@ -192,8 +213,17 @@ p a:hover {
     <input type="number" step="0.01" name="price" required value="<?= htmlspecialchars($_POST['price'] ?? '') ?>">
   </label>
 
+  <label>Quantity:
+    <input type="number" name="quantity" min="0" value="<?= htmlspecialchars($_POST['quantity'] ?? '1') ?>">
+  </label>
+
+  <label>Image:
+    <input type="file" name="image" accept="image/*">
+  </label>
+
   <button type="submit">Add Product</button>
 </form>
+
 
 <p><a href="/electro/pages/dashboard.php">&larr; Back to Dashboard</a></p>
 

@@ -54,15 +54,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 // Fetch all products
-$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+$stmt = $pdo->query("SELECT id, name, price, quantity, image, created_at FROM products ORDER BY created_at DESC");
 $products = $stmt->fetchAll();
+
 ?>
 
 
 <title>Admin Dashboard</title>
 
-
 <h1>Admin Dashboard</h1>
+
 <div class="top-bar">
   <a href="/electro/pages/crud/product_create.php" class="button">+ Add New Product</a>
 </div>
@@ -71,8 +72,10 @@ $products = $stmt->fetchAll();
   <thead>
     <tr>
       <th>ID</th>
+      <th>Image</th>
       <th>Name</th>
       <th>Price (TND)</th>
+      <th>Quantity</th>
       <th>Created At</th>
       <th>Actions</th>
     </tr>
@@ -82,20 +85,30 @@ $products = $stmt->fetchAll();
       <?php foreach ($products as $p): ?>
       <tr>
         <td><?= htmlspecialchars($p['id']) ?></td>
+        <td>
+          <?php if (!empty($p['image'])): ?>
+            <img src="/electro/<?= htmlspecialchars($p['image']) ?>" alt="Image" style="max-height: 50px;">
+          <?php else: ?>
+            <span>No image</span>
+          <?php endif; ?>
+        </td>
+
         <td><?= htmlspecialchars($p['name']) ?></td>
         <td><?= htmlspecialchars(number_format($p['price'], 2)) ?></td>
+        <td><?= htmlspecialchars($p['quantity']) ?></td>
         <td><?= htmlspecialchars($p['created_at']) ?></td>
         <td>
           <a href="/electro/pages/crud/product_edit.php?id=<?= $p['id'] ?>" class="button">Edit</a>
-          <a href="/electro/pages/crud/product_delete.php?id=<?= $p['id'] ?>" class="button" style="background:#a3001b;" >Delete</a>
+          <a href="/electro/pages/crud/product_delete.php?id=<?= $p['id'] ?>" class="button" style="background:#a3001b;">Delete</a>
         </td>
       </tr>
       <?php endforeach; ?>
     <?php else: ?>
-      <tr><td colspan="5">No products found.</td></tr>
+      <tr><td colspan="7">No products found.</td></tr>
     <?php endif; ?>
   </tbody>
 </table>
+
 <style>
     /* Reset and base styles */
 
