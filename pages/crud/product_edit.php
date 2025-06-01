@@ -41,7 +41,7 @@
 
 <?php
 session_start();
-require '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
+require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
 // Check admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -205,6 +205,11 @@ p a:hover {
 
   <button type="submit">Save Changes</button>
 </form>
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    var_dump($_POST);
+}
+?>
 
 <p><a href="/electro/pages/dashboard.php">&larr; Back to Dashboard</a></p>
 
