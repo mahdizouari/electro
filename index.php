@@ -39,7 +39,15 @@
 	<body>
 	<?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
 
-
+								<?php
+									session_start();
+									if (isset($_SESSION['flash_message'])) {
+										echo '<div style="background:#dff0d8; color:#3c763d; padding:10px; border-radius:5px; margin-bottom:10px;">' 
+											. htmlspecialchars($_SESSION['flash_message']) . 
+											'</div>';
+										unset($_SESSION['flash_message']);
+									}
+								?>
 		<!-- SECTION -->
 		<div class="section">
 			<!-- container -->
@@ -166,16 +174,29 @@
 							</div>
 							</div>
 							<div class="add-to-cart">
-							<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+								<form action="pages/add_to_cart.php" method="POST">
+									<input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+									<button type="submit" class="add-to-cart-btn">
+										<i class="fa fa-shopping-cart"></i> add to cart
+									</button>
+								</form>
 							</div>
+							
+
+
 						</div>
 						<!-- /product -->
 						<?php endforeach; ?>
 					</div>
+					
 					<div id="slick-nav-1" class="products-slick-nav"></div>
+					
 					</div>
+					
 					<!-- /tab -->
+					 
 				</div>
+							
 				</div>
 			</div>
 			</div>

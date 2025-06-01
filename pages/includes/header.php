@@ -154,7 +154,7 @@
 					<ul class="main-nav nav navbar-nav">
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><a href="/electro">Home</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'allproducts.php' ? 'active' : '' ?>"><a href="/electro/pages/allproducts.php">Products</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : '' ?>"><a href="/electro/pages/checkout.php">Cart</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : '' ?>"><a href="/electro/pages/cart.php">Cart</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'laptop.php' ? 'active' : '' ?>"><a href="/electro/pages/laptop.php">Laptop</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cameras.php' ? 'active' : '' ?>"><a href="/electro/pages/cameras.php">Cameras</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'accessories.php' ? 'active' : '' ?>"><a href="/electro/pages/accessories.php">Accessories</a></li>

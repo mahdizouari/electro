@@ -34,6 +34,7 @@
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
+		
 
     </head>
 	<body>
@@ -56,75 +57,102 @@
 							<h3 class="title"> All Products</h3>
 							<div class="section-nav">
 								<ul class="section-tab-nav tab-nav">
-									<li class="active"><a data-toggle="tab" href="#tab1">Laptops</a></li>
-									<li><a data-toggle="tab" href="#tab1">Smartphones</a></li>
-									<li><a data-toggle="tab" href="#tab1">Cameras</a></li>
-									<li><a data-toggle="tab" href="#tab1">Accessories</a></li>
+									<li class="active"><a class="category-filter" href="#" data-category="Laptop">Laptops</a></li>
+									<li><a class="category-filter" href="#" data-category="Smartphone">Smartphones</a></li>
+									<li><a class="category-filter" href="#" data-category="Camera">Cameras</a></li>
+									<li><a class="category-filter" href="#" data-category="Accessory">Accessories</a></li>
 								</ul>
 							</div>
+
 						</div>
 					</div>
 					<!-- /section title -->
+					 
                     
 					<!-- Products tab & slick -->
 					<div class="col-md-12">
-						<div class="row">
-							<?php
-							require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
-							$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
-							$products = $stmt->fetchAll();
+					<div class="row" id="product-container">
+<?php
+require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
-							foreach ($products as $product):
-							?>
-							<!-- product -->
-							<div class="col-md-3 col-sm-6 col-xs-12">
-								<div class="product">
-									<div class="product-img">
-										<img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="" style="max-height:200px; object-fit:contain;">
-										<div class="product-label">
-											<?php if (!empty($product['discount'])): ?>
-												<span class="sale">-<?= (int)$product['discount'] ?>%</span>
-											<?php endif; ?>
-											<?php if (!empty($product['is_new'])): ?>
-												<span class="new">NEW</span>
-											<?php endif; ?>
-										</div>
-									</div>
-									<div class="product-body">
-										<p class="product-category"><?= htmlspecialchars($product['category'] ?? 'Other') ?></p>
-										<h3 class="product-name">
-											<a href="/electro/pages/product_detail.php?id=<?= $product['id'] ?>">
-												<?= htmlspecialchars($product['name']) ?>
-											</a>
-										</h3>
-										<h4 class="product-price">
-											<?= number_format($product['price'], 2) ?> TND
-											<?php if (!empty($product['old_price'])): ?>
-												<del class="product-old-price"><?= number_format($product['old_price'], 2) ?> TND</del>
-											<?php endif; ?>
-										</h4>
-										<div class="product-rating">
-											<?php
-											$rating = (int)($product['rating'] ?? 0);
-											for ($i = 1; $i <= 5; $i++):
-												echo '<i class="fa fa-star' . ($i <= $rating ? '' : '-o') . '"></i>';
-											endfor;
-											?>
-										</div>
-										<div class="product-btns">
-											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-										</div>
-									</div>
-									<div class="add-to-cart">
-										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-									</div>
-								</div>
-							</div>
-							<!-- /product -->
-							<?php endforeach; ?>
-						</div>
+$isAjax = !empty($_POST['category']);
+$category = $_POST['category'] ?? null;
+
+// Fetch products
+if ($category) {
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
+    $stmt->execute([$category]);
+} else {
+    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+}
+$products = $stmt->fetchAll();
+
+
+
+$categoryFilter = $_POST['category'] ?? null;
+
+if ($categoryFilter) {
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
+    $stmt->execute([$categoryFilter]);
+} else {
+    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+}
+
+$products = $stmt->fetchAll();
+
+if (empty($products)) {
+    echo '<p class="col-md-12">No products found in this category.</p>';
+}
+
+foreach ($products as $product): ?>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="product">
+            <div class="product-img">
+                <img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="" style="max-height:200px; object-fit:contain;">
+                <div class="product-label">
+                    <?php if (!empty($product['discount'])): ?>
+                        <span class="sale">-<?= (int)$product['discount'] ?>%</span>
+                    <?php endif; ?>
+                    <?php if (!empty($product['is_new'])): ?>
+                        <span class="new">NEW</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="product-body">
+                <p class="product-category"><?= htmlspecialchars($product['category'] ?? 'Other') ?></p>
+                <h3 class="product-name">
+                    <a href="/electro/pages/product_detail.php?id=<?= $product['id'] ?>">
+                        <?= htmlspecialchars($product['name']) ?>
+                    </a>
+                </h3>
+                <h4 class="product-price">
+                    <?= number_format($product['price'], 2) ?> TND
+                    <?php if (!empty($product['old_price'])): ?>
+                        <del class="product-old-price"><?= number_format($product['old_price'], 2) ?> TND</del>
+                    <?php endif; ?>
+                </h4>
+                <div class="product-rating">
+                    <?php
+                    $rating = (int)($product['rating'] ?? 0);
+                    for ($i = 1; $i <= 5; $i++):
+                        echo '<i class="fa fa-star' . ($i <= $rating ? '' : '-o') . '"></i>';
+                    endfor;
+                    ?>
+                </div>
+                <div class="product-btns">
+                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                </div>
+            </div>
+            <div class="add-to-cart">
+                <button class="pages/add_to_cart.php"><i class="fa fa-shopping-cart"></i> add to cart</button>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+</div>
+
 					</div>
 
 
@@ -135,8 +163,38 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
-		
-		
+	
+		<script>
+$(document).ready(function() {
+    $('.add-to-cart-btn').click(function(e) {
+        e.preventDefault();
+
+        var productId = $(this).data('product-id');
+
+        $.ajax({
+            url: '/electro/pages/add_to_cart.php',
+            method: 'POST',
+            data: { product_id: productId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert(response.message); // You can replace this with a custom modal or toast
+                } else if (response.status === 'login_required') {
+                    alert('Please log in to add items to your cart.');
+                    window.location.href = 'login.php';
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('An unexpected error occurred.');
+            }
+        });
+    });
+});
+</script>
+
+
 
 		
 
@@ -150,6 +208,7 @@
 		<script src="js/nouislider.min.js"></script>
 		<script src="js/jquery.zoom.min.js"></script>
 		<script src="js/main.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	</body>
 </html>
