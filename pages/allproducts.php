@@ -147,8 +147,13 @@ foreach ($products as $product): ?>
                 </div>
             </div>
             <div class="add-to-cart">
-                <button class="pages/add_to_cart.php"><i class="fa fa-shopping-cart"></i> add to cart</button>
-            </div>
+										<form action="/electro/pages/add_to_cart.php" method="POST">
+											<input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+											<button type="submit" class="add-to-cart-btn">
+												<i class="fa fa-shopping-cart"></i> add to cart
+											</button>
+										</form>
+									</div>
         </div>
     </div>
 <?php endforeach; ?>
