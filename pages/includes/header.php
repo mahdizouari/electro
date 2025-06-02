@@ -340,6 +340,8 @@
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'laptop.php' ? 'active' : '' ?>"><a href="/electro/pages/laptop.php">Laptop</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cameras.php' ? 'active' : '' ?>"><a href="/electro/pages/cameras.php">Cameras</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'accessories.php' ? 'active' : '' ?>"><a href="/electro/pages/accessories.php">Accessories</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'smartphone.php' ? 'active' : '' ?>"><a href="/electro/pages/smartphone.php">Smartphones</a></li>
+
 						</ul>
 
 					<!-- /NAV -->
