@@ -57,12 +57,7 @@
 						<div class="section-title">
 							<h3 class="title"> All Products</h3>
 							<div class="section-nav">
-								<ul class="section-tab-nav tab-nav">
-									<li class="active"><a class="category-filter" href="#" data-category="Laptop">Laptops</a></li>
-									<li><a class="category-filter" href="#" data-category="Smartphone">Smartphones</a></li>
-									<li><a class="category-filter" href="#" data-category="Camera">Cameras</a></li>
-									<li><a class="category-filter" href="#" data-category="Accessory">Accessories</a></li>
-								</ul>
+								
 							</div>
 
 						</div>
