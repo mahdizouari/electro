@@ -9,6 +9,7 @@
 
 		<title>Electro Shop</title>
 
+
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
@@ -39,15 +40,35 @@
 	<body>
 	<?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
 
-								<?php
-									session_start();
-									if (isset($_SESSION['flash_message'])) {
-										echo '<div style="background:#dff0d8; color:#3c763d; padding:10px; border-radius:5px; margin-bottom:10px;">' 
-											. htmlspecialchars($_SESSION['flash_message']) . 
-											'</div>';
-										unset($_SESSION['flash_message']);
-									}
-								?>
+	<?php
+session_start();
+if (isset($_SESSION['flash_message'])) {
+    echo '
+    <div style="
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    ">
+        <div style="
+            background-color: #e6f9ed;
+            color: #256029;
+            border: 1px solid #b6e2c8;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        ">
+            ' . htmlspecialchars($_SESSION['flash_message']) . '
+        </div>
+    </div>';
+    unset($_SESSION['flash_message']);
+}
+?>
+
 		<!-- SECTION -->
 		<div class="section">
 			<!-- container -->

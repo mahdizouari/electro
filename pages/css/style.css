@@ -109,6 +109,11 @@ ul, ol {
   color: #FFF;
 }
 
+ /* Your CSS from earlier exactly */
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap');
+
+   
+
 /*----------------------------*\
 	Inputs
 \*----------------------------*/

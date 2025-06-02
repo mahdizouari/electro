@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
 		 <!-- The above 3 meta tags *must* come * in the head; any other head content must come *after* these tags -->
 
 		<title>Electro Shop</title>
+
 
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
@@ -52,7 +53,7 @@
 					<!-- section title -->
 					<div class="col-md-12">
 						<div class="section-title">
-							<h3 class="title"> All Products</h3>
+							<h3 class="title"> Accessories</h3>
 							
 						</div>
 					</div>
