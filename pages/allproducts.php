@@ -199,9 +199,6 @@ $(document).ready(function() {
 </script>
 
 
-
-		
-
 		<?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/footer.php'); ?>
 
 
