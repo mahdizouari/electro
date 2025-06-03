@@ -250,50 +250,50 @@
 							<div class="header-ctn">
 								<!-- Wishlist -->
 								<?php
-session_start();
-$wishlist = isset($_SESSION['wishlist']) ? $_SESSION['wishlist'] : [];
-?>
+                  session_start();
+                  $wishlist = isset($_SESSION['wishlist']) ? $_SESSION['wishlist'] : [];
+                  ?>
 
-<!-- Wishlist -->
-<div class="dropdown">
-  <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-    <i class="fa fa-heart-o"></i>
-    <span>Your Wishlist</span>
-    <div class="qty"><?= count($wishlist) ?></div>
-  </a>
-  <div class="cart-dropdown">
-    <div class="cart-list">
-      <?php if (empty($wishlist)): ?>
-        <p class="text-center">Your wishlist is empty</p>
-      <?php else: ?>
-        <?php foreach ($wishlist as $product_id => $product): 
-          $productName = htmlspecialchars($product['name']);
-          $productImage = htmlspecialchars($product['image']);
-          $price = (float) $product['price'];
-        ?>
-        <div class="product-widget">
-          <div class="product-img">
-            <img src="<?= $productImage ?>" alt="<?= $productName ?>">
-          </div>
-          <div class="product-body">
-            <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
-            <h4 class="product-price"><?= number_format($price, 2) ?> TND</h4>
-          </div>
-          <form method="post">
-            <input type="hidden" name="product_id" value="<?= $product_id ?>">
-            <input type="hidden" name="action" value="remove">
-            <button class="delete" type="submit"><i class="fa fa-close"></i></button>
-          </form>
-        </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    </div>
+                  <!-- Wishlist -->
+                  <div class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                      <i class="fa fa-heart-o"></i>
+                      <span>Your Wishlist</span>
+                      <div class="qty"><?= count($wishlist) ?></div>
+                    </a>
+                    <div class="cart-dropdown">
+                      <div class="cart-list">
+                        <?php if (empty($wishlist)): ?>
+                          <p class="text-center">Your wishlist is empty</p>
+                        <?php else: ?>
+                          <?php foreach ($wishlist as $product_id => $product): 
+                            $productName = htmlspecialchars($product['name']);
+                            $productImage = htmlspecialchars($product['image']);
+                            $price = (float) $product['price'];
+                          ?>
+                          <div class="product-widget">
+                            <div class="product-img">
+                              <img src="<?= $productImage ?>" alt="<?= $productName ?>">
+                            </div>
+                            <div class="product-body">
+                              <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
+                              <h4 class="product-price"><?= number_format($price, 2) ?> TND</h4>
+                            </div>
+                            <form method="post">
+                              <input type="hidden" name="product_id" value="<?= $product_id ?>">
+                              <input type="hidden" name="action" value="remove">
+                              <button class="delete" type="submit"><i class="fa fa-close"></i></button>
+                            </form>
+                          </div>
+                          <?php endforeach; ?>
+                        <?php endif; ?>
+                      </div>
 
-    <div class="cart-btns">
-      <a href="/electro/pages/wishlist.php">View Wishlist</a>
-    </div>
-  </div>
-</div>
+                      <div class="cart-btns">
+                        <a href="/electro/pages/wishlist.php">View Wishlist</a>
+                      </div>
+                    </div>
+                  </div>
 
 								<!-- /Wishlist -->
 

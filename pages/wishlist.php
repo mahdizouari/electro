@@ -88,7 +88,42 @@
 </head>
 <body>
 <?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
+<?php
+session_start();
 
+// Handle actions BEFORE any output
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pid = (int) $_POST['product_id'] ?? 0;
+
+    if ($pid && isset($_SESSION['wishlist'][$pid])) {
+        if ($_POST['action'] === 'remove') {
+            unset($_SESSION['wishlist'][$pid]);
+        } elseif ($_POST['action'] === 'add_to_cart') {
+            $item = $_SESSION['wishlist'][$pid];
+
+            if (!isset($_SESSION['cart'])) {
+                $_SESSION['cart'] = [];
+            }
+
+            if (isset($_SESSION['cart'][$pid])) {
+                $_SESSION['cart'][$pid]['quantity']++;
+            } else {
+                $_SESSION['cart'][$pid] = $item;
+                $_SESSION['cart'][$pid]['quantity'] = 1;
+            }
+
+            unset($_SESSION['wishlist'][$pid]);
+        }
+    }
+
+    // Redirect back to the same page (correctly)
+    header('Location: /electro/index.php');
+    exit;
+}
+?>
+
+
+<!-- HTML begins here -->
 <div class="wishlist-page">
     <h4>Your Wishlist</h4>
 
@@ -103,12 +138,12 @@
                     <span><?= number_format($item['price'], 2) ?> TND</span>
                 </div>
                 <div class="wishlist-actions">
-                    <form method="post">
+                    <form method="post" action="/electro/pages/remove_from_wishlist.php">
                         <input type="hidden" name="product_id" value="<?= $product_id ?>">
                         <input type="hidden" name="action" value="add_to_cart">
                         <button type="submit">Add to Cart</button>
                     </form>
-                    <form method="post">
+                    <form method="post" action="/electro/pages/remove_from_wishlist.php">
                         <input type="hidden" name="product_id" value="<?= $product_id ?>">
                         <input type="hidden" name="action" value="remove">
                         <button type="submit" class="btn-remove">Remove</button>
@@ -116,32 +151,18 @@
                 </div>
             </div>
         <?php endforeach; ?>
+
+        
     <?php endif; ?>
+    <div class="wishlist-actions" style="margin-top: 20px; text-align: center;">
+            <a href="/electro/pages/cart.php" class="btn-go-to-cart" style="padding: 10px 20px; background-color: #D10024; color: white; border-radius: 5px; text-decoration: none;">
+                Go to Cart
+            </a>
+        </div>
 </div>
-<?php
-session_start();
 
-// Handle remove or add-to-cart actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $pid = (int) $_POST['product_id'] ?? 0;
 
-    if ($pid && isset($_SESSION['wishlist'][$pid])) {
-        if ($_POST['action'] === 'remove') {
-            unset($_SESSION['wishlist'][$pid]);
-        } elseif ($_POST['action'] === 'add_to_cart') {
-            // Add to cart and remove from wishlist
-            $item = $_SESSION['wishlist'][$pid];
-            if (isset($_SESSION['cart'][$pid])) {
-                $_SESSION['cart'][$pid]['quantity']++;
-            } else {
-                $_SESSION['cart'][$pid] = $item;
-                $_SESSION['cart'][$pid]['quantity'] = 1;
-            }
-            unset($_SESSION['wishlist'][$pid]);
-        }
-    }
-}
-?>
+
 <?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/footer.php'); ?>
 </body>
 </html>

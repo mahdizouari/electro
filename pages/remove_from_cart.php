@@ -8,3 +8,4 @@ if ($id && isset($_SESSION['cart'][$id])) {
 }
 
 header('Location: cart.php');
+exit;
