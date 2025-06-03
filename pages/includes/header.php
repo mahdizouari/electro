@@ -341,7 +341,9 @@
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cameras.php' ? 'active' : '' ?>"><a href="/electro/pages/cameras.php">Cameras</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'accessories.php' ? 'active' : '' ?>"><a href="/electro/pages/accessories.php">Accessories</a></li>
 						<li class="<?= basename($_SERVER['PHP_SELF']) == 'smartphone.php' ? 'active' : '' ?>"><a href="/electro/pages/smartphone.php">Smartphones</a></li>
-
+            <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+              <li class="<?= basename($_SERVER['PHP_SELF']) == 'commande.php' ? 'active' : '' ?>"><a href="/electro/pages/commande.php">Commandes</a></li>
+            <?php endif; ?>
 						</ul>
 
 					<!-- /NAV -->

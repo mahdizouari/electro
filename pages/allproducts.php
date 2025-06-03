@@ -213,3 +213,90 @@ $(document).ready(function() {
 
 	</body>
 </html>
+
+<style>
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background: white;
+  margin: 5% auto 0 auto; /* <-- updated margin */
+  padding:60px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+  max-height: 89vh;       /* prevent overflow */
+  overflow-y: auto;      /* scroll if needed */
+}
+
+.modal-content img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.modal-content h2 {
+  color: #d10024;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  color: #d10024;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+</style>
+<script>
+  document.querySelectorAll('.quick-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const modal = document.getElementById('modal-' + id);
+      if (modal) {
+        document.body.appendChild(modal); // ⬅️ Move modal to body
+        modal.style.display = 'flex';
+      }
+    });
+  });
+
+  document.querySelectorAll('.close-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const modal = document.getElementById('modal-' + id);
+      if (modal) modal.style.display = 'none';
+    });
+  });
+
+  window.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) {
+      e.target.style.display = 'none';
+    }
+  });
+</script>
