@@ -229,7 +229,7 @@ $(document).ready(function() {
 .modal-content {
   background: white;
   margin: 5% auto 0 auto; /* <-- updated margin */
-  padding:60px;
+  padding:40px;
   width: 90%;
   max-width: 800px;
   border-radius: 10px;
