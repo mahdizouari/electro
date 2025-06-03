@@ -120,8 +120,16 @@
                     ?>
                   </div>
                   <div class="product-btns">
-                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                    <button class="quick-view-btn" data-id="<?= $product['id'] ?>">
+                  <form action="/electro/pages/add_to_wishlist.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="action" value="add_to_wishlist">
+                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                    <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
+                    <input type="hidden" name="price" value="<?= $product['price'] ?>">
+                    <input type="hidden" name="image" value="<?= $product['image'] ?>">
+                    <button type="submit" class="fa fa-heart-o add-to-wishlist">
+                    <span class="tooltipp">add to wishlist</span>
+                    </button>
+                  </form>                    <button class="quick-view-btn" data-id="<?= $product['id'] ?>">
                     <i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
                     </button>
                     

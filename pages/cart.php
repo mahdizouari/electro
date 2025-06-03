@@ -42,7 +42,7 @@
     <h4>Shopping cart</h4>
     <?php
         session_start();        
-
+      
         // Handle form submissions for updating quantity or removing item
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['action']) && isset($_POST['product_id'])) {
@@ -70,7 +70,12 @@
             $totalPrice += $item['price'] * $item['quantity'];
         }
     ?>
-    
+    <?php if (isset($_SESSION['flash_message'])): ?>
+        <div class="flash-message" style="padding: 10px; background-color: #d1ecf1; color: #0c5460; margin-bottom: 15px; border-radius: 5px;">
+            <?= htmlspecialchars($_SESSION['flash_message']) ?>
+        </div>
+        <?php unset($_SESSION['flash_message']); // Remove after showing ?>
+    <?php endif; ?>
 
     <?php if (empty($_SESSION['cart'])): ?>
       <p>Your cart is empty.</p>

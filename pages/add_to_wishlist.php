@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Redirect back to the previous page
+$_SESSION['flash_message'] = "{$name} has been added to your wishlist.";
+
+// Redirect to the wishlist page so user sees the message
 header('Location: /electro');
-exit;

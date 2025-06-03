@@ -1,11 +1,32 @@
 <?php
 session_start();
 
-$id = $_POST['product_id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pid = (int) ($_POST['product_id'] ?? 0);
 
-if ($id && isset($_SESSION['cart'][$id])) {
-    unset($_SESSION['cart'][$id]);
+    if ($pid && isset($_SESSION['cart'][$pid])) {
+        if ($_POST['action'] === 'remove') {
+            unset($_SESSION['cart'][$pid]);
+            $_SESSION['flash_message'] = 'Item removed from cart.';
+        } elseif ($_POST['action'] === 'add_to_cart') {
+            $item = $_SESSION['cart'][$pid];
+
+            if (!isset($_SESSION['cart'])) {
+                $_SESSION['cart'] = [];
+            }
+
+            if (isset($_SESSION['cart'][$pid])) {
+                $_SESSION['cart'][$pid]['quantity']++;
+            } else {
+                $_SESSION['cart'][$pid] = $item;
+                $_SESSION['cart'][$pid]['quantity'] = 1;
+            }
+
+            unset($_SESSION['cart'][$pid]);
+            $_SESSION['flash_message'] = 'Item moved to cart.';
+        }
+    }
+    header('location: cart.php');
+    exit;
 }
-
-header('Location: cart.php');
-exit;
+?>

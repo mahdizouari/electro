@@ -127,6 +127,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="wishlist-page">
     <h4>Your Wishlist</h4>
 
+    <!-- ✅ Display flash message if set -->
+    <?php if (isset($_SESSION['flash_message'])): ?>
+        <div class="flash-message" style="padding: 10px; background-color: #d1ecf1; color: #0c5460; margin-bottom: 15px; border-radius: 5px;">
+            <?= htmlspecialchars($_SESSION['flash_message']) ?>
+        </div>
+        <?php unset($_SESSION['flash_message']); // Remove after showing ?>
+    <?php endif; ?>
+
     <?php if (empty($_SESSION['wishlist'])): ?>
         <p>Your wishlist is empty.</p>
     <?php else: ?>
@@ -152,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endforeach; ?>
 
+        <!-- Go to Cart button -->
         
     <?php endif; ?>
     <div class="wishlist-actions" style="margin-top: 20px; text-align: center;">
@@ -160,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </div>
 </div>
+
 
 
 
