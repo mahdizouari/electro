@@ -12,7 +12,7 @@
 						<li><a href="#"><i class="fa fa-map-marker"></i> Cité Ons</a></li>
 					</ul>
 					<ul class="header-links pull-right">
-						<li><a href="#"><i class="fa fa-dollar"></i> TND</a></li>
+						<li><a href="#"><i class=""></i> TND</a></li>
 
 						<?php
 						session_start();
