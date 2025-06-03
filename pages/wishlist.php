@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Go to Cart button -->
         
     <?php endif; ?>
-    <div class="wishlist-actions" style="margin-top: 20px; text-align: center;">
+        <div class="wishlist-actions" style="margin-top: 20px; text-align: center;">
             <a href="/electro/pages/cart.php" class="btn-go-to-cart" style="padding: 10px 20px; background-color: #D10024; color: white; border-radius: 5px; text-decoration: none;">
                 Go to Cart
             </a>

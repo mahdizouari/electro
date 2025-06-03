@@ -147,6 +147,11 @@
     </div>
 
     <?php endif; ?>
+    <div class="wishlist-actions" style="margin-top: 20px; text-align: center;">
+            <a href="/electro/pages/wishlist.php" class="btn-go-to-cart" style="padding: 10px 20px; background-color: #D10024; color: white; border-radius: 5px; text-decoration: none;">
+                Go back to Wishlist
+            </a>
+        </div>
   </div>
 
     
