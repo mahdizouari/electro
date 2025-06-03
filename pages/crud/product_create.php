@@ -41,6 +41,8 @@
 
 
 <?php
+
+
 session_start();
 require '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
@@ -51,6 +53,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 $error = '';
+$success = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -60,33 +64,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category = trim($_POST['category'] ?? '');
 
     if (!$name || $price <= 0 || !$category) {
-        $error = "Name and valid price and category are required.";
+        $error = "Name, valid price, and category are required.";
     } else {
-        // ✅ Handle image upload
+        // Handle image upload
         $imagePath = '';
         if ($image && $image['tmp_name']) {
-          $filename = 'uploads/' . time() . '_' . basename($image['name']);
-          $destination = '/opt/lampp/htdocs/electro/' . $filename;
-      
-          if (move_uploaded_file($image['tmp_name'], $destination)) {
-              $imagePath = $filename;
-          } else {
-              $error = "Failed to upload image. Check folder permissions.";
-          }
-      }
-      
+            $filename = 'uploads/' . time() . '_' . basename($image['name']);
+            $destination = '/opt/lampp/htdocs/electro/' . $filename;
+
+            if (move_uploaded_file($image['tmp_name'], $destination)) {
+                $imagePath = $filename;
+            } else {
+                $error = "Failed to upload image. Check folder permissions.";
+            }
+        }
 
         if (!$error) {
-            // ✅ Insert into database including quantity and image
             $stmt = $pdo->prepare("INSERT INTO products (name, description, price, quantity, category, image, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
             $stmt->execute([$name, $description, $price, $quantity, $category, $imagePath]);
 
-            header('Location: /electro/pages/dashboard.php');
-            exit();
+            $success_message = "Product updated successfully.";
+
         }
     }
 }
+
+// If flash message is set, grab and clear it
+if (isset($_SESSION['flash_message'])) {
+    $success = $_SESSION['flash_message'];
+    unset($_SESSION['flash_message']);
+}
 ?>
+
+<!-- HTML Part of your form page, to display errors and success messages -->
+
+<?php if ($error): ?>
+    <div style="color: red; margin-bottom: 15px;"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
+
+<?php if ($success): ?>
+    <div style="color: green; margin-bottom: 15px;"><?= htmlspecialchars($success) ?></div>
+<?php endif; ?>
+
+<!-- Your form goes here -->
+
 
 
 
@@ -202,6 +223,11 @@ p a:hover {
 <?php endif; ?>
 
 <form method="post" id="edit-product-form" enctype="multipart/form-data">
+<?php if ($success_message): ?>
+    <div class="flash-message" style="background:#d4edda;color:#155724;padding:10px;border-radius:5px;margin-bottom:15px;">
+        <?= htmlspecialchars($success_message) ?>
+    </div>
+<?php endif; ?>
   <label>Name:
     <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
   </label>

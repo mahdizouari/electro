@@ -42,6 +42,7 @@
 <?php
 session_start();
 require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
+  
 
 // Check admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -104,11 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if (!$error) {
         $stmt = $pdo->prepare("UPDATE products SET name = ?, description = ?, price = ?, quantity = ?, category = ?, image = ?, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$name, $description, $price, $quantity, $category, $imagePath, $id]);
-          header('Location: /electro');
-          exit();
-      }
+        
+        $success_message = "Product updated successfully.";
+    }
+      
   }
+  
 }
+
 
 ?>
 
@@ -222,6 +226,11 @@ p a:hover {
 <?php endif; ?>
 
 <form method="post" enctype="multipart/form-data" id="edit-product-form">
+<?php if ($success_message): ?>
+    <div class="flash-message" style="background:#d4edda;color:#155724;padding:10px;border-radius:5px;margin-bottom:15px;">
+        <?= htmlspecialchars($success_message) ?>
+    </div>
+<?php endif; ?>
   <label>Name:
     <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? $product['name']) ?>">
   </label>
@@ -258,7 +267,9 @@ p a:hover {
     <input type="file" name="image">
   </label>
 
-  <button type="submit">Save Changes</button>
+  <button  type="submit">Save Changes</button>
+ 
+
 </form>
 
 <?php

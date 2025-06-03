@@ -47,6 +47,10 @@
 session_start();
 require '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
+
+
+
+
 // Check if admin logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../pages/login.php');
