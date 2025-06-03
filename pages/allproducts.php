@@ -45,127 +45,130 @@
 		
 
 		
-            <!-- SECTION -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
 
-					<!-- section title -->
-					<div class="col-md-12">
-						<div class="section-title">
-							<h3 class="title"> All Products</h3>
-							<div class="section-nav">
-								
-							</div>
+	
 
-						</div>
-					</div>
-					<!-- /section title -->
-					 
-                    
-					<!-- Products tab & slick -->
-					<div class="col-md-12">
-					<div class="row" id="product-container">
-<?php
-require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
+<!-- SECTION -->
+<div class="section">
+  <!-- container -->
+  <div class="container">
+    <!-- row -->
+    <div class="row">
 
-$isAjax = !empty($_POST['category']);
-$category = $_POST['category'] ?? null;
+      <!-- section title -->
+      <div class="col-md-12">
+        <div class="section-title">
+          <h3 class="title"> All Products</h3>
+        </div>
+      </div>
+      <!-- /section title -->
 
-// Fetch products
-if ($category) {
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
-    $stmt->execute([$category]);
-} else {
-    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
-}
-$products = $stmt->fetchAll();
+      <!-- Products Display -->
+      <div class="col-md-12">
+        <div class="row" id="product-container">
+          <?php
+          require_once '/opt/lampp/htdocs/electro/pages/includes/pdo.php';
 
+          $category = $_POST['category'] ?? null;
 
+          if ($category) {
+              $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
+              $stmt->execute([$category]);
+          } else {
+              $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+          }
 
-$categoryFilter = $_POST['category'] ?? null;
+          $products = $stmt->fetchAll();
 
-if ($categoryFilter) {
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
-    $stmt->execute([$categoryFilter]);
-} else {
-    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
-}
+          if (empty($products)) {
+              echo '<p class="col-md-12">No products found in this category.</p>';
+          }
 
-$products = $stmt->fetchAll();
-
-if (empty($products)) {
-    echo '<p class="col-md-12">No products found in this category.</p>';
-}
-
-foreach ($products as $product): ?>
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="product">
-            <div class="product-img">
-                <img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="" style="max-height:200px; object-fit:contain;">
-                <div class="product-label">
+          foreach ($products as $product): ?>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="product">
+                <div class="product-img">
+                  <img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="" style="max-height:200px; object-fit:contain;">
+                  <div class="product-label">
                     <?php if (!empty($product['discount'])): ?>
-                        <span class="sale">-<?= (int)$product['discount'] ?>%</span>
+                      <span class="sale">-<?= (int)$product['discount'] ?>%</span>
                     <?php endif; ?>
                     <?php if (!empty($product['is_new'])): ?>
-                        <span class="new">NEW</span>
+                      <span class="new">NEW</span>
                     <?php endif; ?>
+                  </div>
                 </div>
-            </div>
-            <div class="product-body">
-                <p class="product-category"><?= htmlspecialchars($product['category'] ?? 'Other') ?></p>
-                <h3 class="product-name">
+                <div class="product-body">
+                  <p class="product-category"><?= htmlspecialchars($product['category'] ?? 'Other') ?></p>
+                  <h3 class="product-name">
                     <a href="/electro/pages/product_detail.php?id=<?= $product['id'] ?>">
-                        <?= htmlspecialchars($product['name']) ?>
+                      <?= htmlspecialchars($product['name']) ?>
                     </a>
-                </h3>
-                <h4 class="product-price">
+                  </h3>
+                  <h4 class="product-price">
                     <?= number_format($product['price'], 2) ?> TND
                     <?php if (!empty($product['old_price'])): ?>
-                        <del class="product-old-price"><?= number_format($product['old_price'], 2) ?> TND</del>
+                      <del class="product-old-price"><?= number_format($product['old_price'], 2) ?> TND</del>
                     <?php endif; ?>
-                </h4>
-                <div class="product-rating">
+                  </h4>
+                  <div class="product-rating">
                     <?php
                     $rating = (int)($product['rating'] ?? 0);
                     for ($i = 1; $i <= 5; $i++):
-                        echo '<i class="fa fa-star' . ($i <= $rating ? '' : '-o') . '"></i>';
+                      echo '<i class="fa fa-star' . ($i <= $rating ? '' : '-o') . '"></i>';
                     endfor;
                     ?>
-                </div>
-                <div class="product-btns">
+                  </div>
+                  <div class="product-btns">
                     <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                    <button class="quick-view-btn" data-id="<?= $product['id'] ?>">
+                    <i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
+                    </button>
+                    
+                  </div>
                 </div>
+                <div class="add-to-cart">
+                  <form action="/electro/pages/add_to_cart.php" method="POST">
+                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                    <button type="submit" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                  </form>
+                </div>
+              </div>
             </div>
-            <div class="add-to-cart">
-										<form action="/electro/pages/add_to_cart.php" method="POST">
-											<input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-											<button type="submit" class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</form>
-									</div>
+
+            <!-- Quick View Modal -->
+            <div class="modal" id="modal-<?= $product['id'] ?>">
+              <div class="modal-content">
+                <span class="close-btn" data-id="<?= $product['id'] ?>">&times;</span>
+                <img src="/electro/<?= htmlspecialchars($product['image'] ?: 'img/default-product.png') ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <h1><?= htmlspecialchars($product['name']) ?></h1>
+                <h4>Category: <?= htmlspecialchars($product['category'] ?? 'Other') ?></h4>
+                <strong>Description: <?= nl2br(htmlspecialchars($product['description'] ?? 'No description available.')) ?></strong> <br><br>
+                <h2><?= number_format($product['price'], 2) ?> TND</h2>
+              </div>
+            </div>
+
+          <?php endforeach; ?>
         </div>
+      </div>
+      <!-- /Products Display -->
+
     </div>
-<?php endforeach; ?>
+    <!-- /row -->
+  </div>
+  <!-- /container -->
 </div>
+<!-- /SECTION -->
 
-					</div>
 
 
-					<!-- Products tab & slick -->
-				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
-		<!-- /SECTION -->
-	
-		<script>
+
+
+
+
+
+
+<script>
 $(document).ready(function() {
     $('.add-to-cart-btn').click(function(e) {
         e.preventDefault();
