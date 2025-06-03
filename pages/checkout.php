@@ -192,6 +192,57 @@
 		</div>
 	</div>
 </form>
+<?php
+session_start();
+require_once 'pdo.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate required fields
+    if (
+        isset($_POST['firstname'], $_POST['lastname'], $_POST['address'], $_POST['city'], $_POST['tel']) &&
+        !empty($_POST['firstname']) && !empty($_POST['lastname']) &&
+        !empty($_POST['address']) && !empty($_POST['city']) && !empty($_POST['tel']) &&
+        isset($_SESSION['cart']) && !empty($_SESSION['cart'])
+    ) {
+        $firstname = $_POST['firstname'];
+        $lastname = $_POST['lastname'];
+        $address = $_POST['address'];
+        $city = $_POST['city'];
+        $tel = $_POST['tel'];
+        $date = date('Y-m-d H:i:s');
+
+        foreach ($_SESSION['cart'] as $item) {
+            $product_id = $item['id'];
+            $quantity = isset($item['quantity']) ? $item['quantity'] : 1;
+            $name = $firstname . ' ' . $lastname;
+
+            // Insert into cart table
+            $stmt = $pdo->prepare("INSERT INTO cart (product_id, quantity, name, lastname, adress, city, numero, date)
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$product_id, $quantity, $firstname, $lastname, $address, $city, $tel, $date]);
+        }
+
+        // Clear the cart session
+        unset($_SESSION['cart']);
+
+        // Display blank success message page
+        echo "<!DOCTYPE html>
+        <html>
+        <head><title>Order Confirmation</title></head>
+        <body style='text-align:center; font-family:Arial; margin-top:50px;'>
+            <h2>✅ Order placed successfully!</h2>
+            <p>Thank you for your purchase.</p>
+        </body>
+        </html>";
+        exit;
+    } else {
+        echo "Missing required fields or cart is empty.";
+    }
+} else {
+    echo "Invalid request.";
+}
+?>
+
 
 		<!-- /SECTION -->
 
