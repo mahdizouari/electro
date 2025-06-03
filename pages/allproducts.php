@@ -40,7 +40,35 @@
 	<body>
 	<?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
 
-	
+	<?php
+
+if (isset($_SESSION['flash_message'])) {
+    echo '
+    <div style="
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    ">
+        <div style="
+            background-color: #e6f9ed;
+            color: #256029;
+            border: 1px solid #b6e2c8;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        ">
+            ' . htmlspecialchars($_SESSION['flash_message']) . '
+        </div>
+    </div>';
+    unset($_SESSION['flash_message']);
+}
+?>
+
 
 		
 
@@ -126,6 +154,8 @@
                     <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
                     <input type="hidden" name="price" value="<?= $product['price'] ?>">
                     <input type="hidden" name="image" value="<?= $product['image'] ?>">
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+
                     <button type="submit" class="fa fa-heart-o add-to-wishlist">
                     <span class="tooltipp">add to wishlist</span>
                     </button>

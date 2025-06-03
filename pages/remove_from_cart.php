@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['flash_message'] = 'Item moved to cart.';
         }
     }
+    $_SESSION['flash_message'] = "Removed From Cart";
+
     header('location: cart.php');
     exit;
 }

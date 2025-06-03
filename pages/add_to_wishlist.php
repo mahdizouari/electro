@@ -30,6 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $_SESSION['flash_message'] = "{$name} is already in your wishlist.";
     }
 
-    header('Location: /electro'); // Redirect to wishlist page
-    exit();
+    // After processing POST:
+$_SESSION['flash_message'] = "Added to wishlist.";
+$redirect_back = $_POST['redirect'] ?? '/electro';  // default fallback
+header("Location: " . $redirect_back);
+exit();
+
 }

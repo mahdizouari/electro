@@ -127,13 +127,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="wishlist-page">
     <h4>Your Wishlist</h4>
 
-    <!-- ✅ Display flash message if set -->
-    <?php if (isset($_SESSION['flash_message'])): ?>
-        <div class="flash-message" style="padding: 10px; background-color: #d1ecf1; color: #0c5460; margin-bottom: 15px; border-radius: 5px;">
-            <?= htmlspecialchars($_SESSION['flash_message']) ?>
+    <?php
+
+if (isset($_SESSION['flash_message'])) {
+    echo '
+    <div style="
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    ">
+        <div style="
+            background-color: #e6f9ed;
+            color: #256029;
+            border: 1px solid #b6e2c8;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        ">
+            ' . htmlspecialchars($_SESSION['flash_message']) . '
         </div>
-        <?php unset($_SESSION['flash_message']); // Remove after showing ?>
-    <?php endif; ?>
+    </div>';
+    unset($_SESSION['flash_message']);
+}
+?>
 
     <?php if (empty($_SESSION['wishlist'])): ?>
         <p>Your wishlist is empty.</p>
