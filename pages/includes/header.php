@@ -56,81 +56,232 @@
 						<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
-<div class="col-md-6">
-  <div class="header-search-container" style="position: relative;">
-    <div class="header-search" id="search-area">
-      <form method="GET" action="">
-        <select class="input-select" name="category">
-          <option value="">All Categories</option>
-          <option value="Laptops">Laptops</option>
-          <option value="Cameras">Cameras</option>
-          <option value="Smartphones">Smartphones</option>
-          <option value="Accessories">Accessories</option>
-        </select>
-        <input class="input" name="search" id="search-input" placeholder="Search here" autocomplete="off"
-          value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-        <button type="submit" class="search-btn">Search</button>
-      </form>
-    </div>
+              <div class="col-md-6">
+                <div class="header-search-container" style="position: relative;">
+                  <div class="header-search" id="search-area">
+                    <form method="GET" action="">
+                      <select class="input-select" name="category">
+                        <option value="">All Categories</option>
+                        <option value="Laptops">Laptops</option>
+                        <option value="Cameras">Cameras</option>
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Accessories">Accessories</option>
+                      </select>
+                      <input class="input" name="search" id="search-input" placeholder="Search here" autocomplete="off"
+                        value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                      <button type="submit" class="search-btn">Search</button>
+                    </form>
+                  </div>
 
-    <!-- Search Result Box -->
-    <div id="search-results" class="search-results-box" style="display: none;">
-      <?php
-        $conn = new mysqli("localhost", "root", "", "electro");
-        if ($conn->connect_error) die("DB error: " . $conn->connect_error);
+                  <!-- Search Result Box -->
+                  <div id="search-results" class="search-results-box" style="display: none;">
+                    <?php
+                      $conn = new mysqli("localhost", "root", "1234", "electro");
+                      if ($conn->connect_error) die("DB error: " . $conn->connect_error);
 
-        $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
-        $category = isset($_GET['category']) ? trim($_GET['category']) : '';
+                      $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+                      $category = isset($_GET['category']) ? trim($_GET['category']) : '';
 
-        $sql = "SELECT name, description, price, image FROM products WHERE 1";
-        $params = [];
-        $types = "";
+                      $sql = "SELECT name, description, price, image FROM products WHERE 1";
+                      $params = [];
+                      $types = "";
 
-        if ($searchTerm !== '') {
-            $sql .= " AND name LIKE ?";
-            $params[] = '%' . $searchTerm . '%';
-            $types .= "s";
-        }
+                      if ($searchTerm !== '') {
+                          $sql .= " AND name LIKE ?";
+                          $params[] = '%' . $searchTerm . '%';
+                          $types .= "s";
+                      }
 
-        if ($category !== '') {
-            $sql .= " AND category = ?";
-            $params[] = $category;
-            $types .= "s";
-        }
+                      if ($category !== '') {
+                          $sql .= " AND category = ?";
+                          $params[] = $category;
+                          $types .= "s";
+                      }
 
-        $stmt = $conn->prepare($sql);
-        if (!empty($params)) {
-            $stmt->bind_param($types, ...$params);
-        }
+                      $stmt = $conn->prepare($sql);
+                      if (!empty($params)) {
+                          $stmt->bind_param($types, ...$params);
+                      }
 
-        $stmt->execute();
-        $result = $stmt->get_result();
+                      $stmt->execute();
+                      $result = $stmt->get_result();
 
-        if ($searchTerm !== '') {
-          if ($result->num_rows > 0):
-            while ($product = $result->fetch_assoc()):
-              $filename = basename($product['image']);
-              $imagePath = "uploads/" . $filename;
-              $imageURL = htmlspecialchars($imagePath);
-              $showImage = file_exists($imagePath) && !is_dir($imagePath);
-      ?>
-        <div style="display: flex; gap: 10px; align-items: center; padding: 8px 5px; border-bottom: 1px solid #eee;">
-          <?php if ($showImage): ?>
-            <img src="<?= $imageURL ?>" alt="Product Image"
-              style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
-          <?php endif; ?>
-          <div>
-            <strong><?= htmlspecialchars($product['name']) ?></strong><br>
-            <small><?= htmlspecialchars($product['description']) ?></small><br>
-            <span><strong>$<?= number_format($product['price'], 2) ?></strong></span>
-          </div>
-        </div>
-      <?php endwhile; else: ?>
-        <p style="margin: 0;">No products available at the moment.</p>
-      <?php endif; } ?>
-    </div>
-  </div>
-</div>
+                      if ($searchTerm !== '') {
+                        if ($result->num_rows > 0):
+                          while ($product = $result->fetch_assoc()):
+                            $filename = basename($product['image']);
+                            $imagePath = "uploads/" . $filename;
+                            $imageURL = htmlspecialchars($imagePath);
+                            $showImage = file_exists($imagePath) && !is_dir($imagePath);
+                    ?>
+                      <div style="display: flex; gap: 10px; align-items: center; padding: 8px 5px; border-bottom: 1px solid #eee;">
+                        <?php if ($showImage): ?>
+                          <img src="<?= $imageURL ?>" alt="Product Image"
+                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        <?php endif; ?>
+                        <div>
+                          <strong><?= htmlspecialchars($product['name']) ?></strong><br>
+                          <small><?= htmlspecialchars($product['description']) ?></small><br>
+                          <span><strong>$<?= number_format($product['price'], 2) ?></strong></span>
+                        </div>
+                      </div>
+                    <?php endwhile; else: ?>
+                      <p style="margin: 0;">No products available at the moment.</p>
+                    <?php endif; } ?>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- /SEARCH BAR -->
+
+                          <!-- ACCOUNT -->
+                          <div class="col-md-3 clearfix">
+                            <div class="header-ctn">
+                              <!-- Wishlist -->
+                              <?php
+                                session_start();
+                                $wishlist = isset($_SESSION['wishlist']) ? $_SESSION['wishlist'] : [];
+                                ?>
+
+                                <!-- Wishlist -->
+                                <div class="dropdown">
+                                  <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa fa-heart-o"></i>
+                                    <span>Your Wishlist</span>
+                                    <div class="qty"><?= count($wishlist) ?></div>
+                                  </a>
+                                  <div class="cart-dropdown">
+                                    <div class="cart-list">
+                                      <?php if (empty($wishlist)): ?>
+                                        <p class="text-center">Your wishlist is empty</p>
+                                      <?php else: ?>
+                                        <?php foreach ($wishlist as $product_id => $product): 
+                                          $productName = htmlspecialchars($product['name']);
+                                          $productImage = htmlspecialchars($product['image']);
+                                          $price = (float) $product['price'];
+                                        ?>
+                                        <div class="product-widget">
+                                          <div class="product-img">
+                                            <img src="<?= $productImage ?>" alt="<?= $productName ?>">
+                                          </div>
+                                          <div class="product-body">
+                                            <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
+                                            <h4 class="product-price"><?= number_format($price, 2) ?> TND</h4>
+                                          </div>
+                                          <form method="post">
+                                            <input type="hidden" name="product_id" value="<?= $product_id ?>">
+                                            <input type="hidden" name="action" value="remove">
+                                            <button class="delete" type="submit"><i class="fa fa-close"></i></button>
+                                          </form>
+                                        </div>
+                                        <?php endforeach; ?>
+                                      <?php endif; ?>
+                                    </div>
+
+                                    <div class="cart-btns">
+                                      <a href="/electro/pages/wishlist.php">View Wishlist</a>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              <!-- /Wishlist -->
+
+                              <?php
+                                session_start();
+                                $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+                                $totalQuantity = 0;
+                                $totalPrice = 0.0;
+                                ?>
+
+                                <!-- Cart -->
+                                <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                  <i class="fa fa-shopping-cart"></i>
+                                  <span>Your Cart</span>
+                                  <div class="qty"><?= count($cart) ?></div>
+                                </a>
+                                <div class="cart-dropdown">
+                                  <div class="cart-list">
+                                  <?php if (empty($cart)): ?>
+                                    <p class="text-center">Cart is empty</p>
+                                  <?php else: ?>
+                                    <?php foreach ($cart as $product): 
+                                    $productName = htmlspecialchars($product['name']);
+                                    $productImage = htmlspecialchars($product['image']);
+                                    $price = (float) $product['price'];
+                                    $quantity = (int) $product['quantity'];
+                                    $subtotal = $price * $quantity;
+                                    $totalQuantity += $quantity;
+                                    $totalPrice += $subtotal;
+                                    ?>
+                                      <div class="product-widget">
+                                          <div class="product-img">
+                                            <img src="<?= $productImage ?>" alt="<?= $productName ?>">
+                                          </div>
+                                          <div class="product-body">
+                                            <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
+                                            <h4 class="product-price"><span class="qty"><?= $quantity ?>x</span><?= number_format($price, 2) ?> TND</h4>
+                                          </div>
+                                          <form method="post">
+                                            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                                            <input type="hidden" name="action" value="remove">
+                                            <button class="delete" type="submit"><i class="fa fa-close"></i></button>
+                                          </form>
+                                      </div>
+                                    <?php endforeach; ?>
+                                  <?php endif; ?>
+                                  </div>
+
+                                    <div class="cart-summary">
+                                      <small><?= $totalQuantity ?> Item(s) selected</small>
+                                      <h5>SUBTOTAL: <?= number_format($totalPrice, 2) ?> TND</h5>
+                                    </div>
+                                  <div class="cart-btns">
+                                    <a href="/electro/pages/cart.php">View Cart</a>
+                                    <a href="/electro/pages/checkout.php">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                  </div>
+                                </div>
+                                </div>
+                                <!-- /Cart -->
+
+
+                              
+                            </div>
+                          </div>
+                          <!-- /ACCOUNT -->
+                        </div>
+                        <!-- row -->
+                      </div>
+                      <!-- container -->
+                    </div>
+			<!-- /MAIN HEADER -->
+             <!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><a href="/electro">Home</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'allproducts.php' ? 'active' : '' ?>"><a href="/electro/pages/allproducts.php">Products</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'laptop.php' ? 'active' : '' ?>"><a href="/electro/pages/laptop.php">Laptop</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cameras.php' ? 'active' : '' ?>"><a href="/electro/pages/cameras.php">Cameras</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'accessories.php' ? 'active' : '' ?>"><a href="/electro/pages/accessories.php">Accessories</a></li>
+						<li class="<?= basename($_SERVER['PHP_SELF']) == 'smartphone.php' ? 'active' : '' ?>"><a href="/electro/pages/smartphone.php">Smartphones</a></li>
+            <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+              <li class="<?= basename($_SERVER['PHP_SELF']) == 'commande.php' ? 'active' : '' ?>"><a href="/electro/pages/commande.php">Commandes</a></li>
+            <?php endif; ?>
+						</ul>
+
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			
+			<!-- /container -->
+		</nav>
 
 <!-- CSS -->
 <style>
@@ -243,155 +394,5 @@
     }
   })();
 </script>
-						<!-- /SEARCH BAR -->
-
-						<!-- ACCOUNT -->
-						<div class="col-md-3 clearfix">
-							<div class="header-ctn">
-								<!-- Wishlist -->
-								<?php
-                  session_start();
-                  $wishlist = isset($_SESSION['wishlist']) ? $_SESSION['wishlist'] : [];
-                  ?>
-
-                  <!-- Wishlist -->
-                  <div class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                      <i class="fa fa-heart-o"></i>
-                      <span>Your Wishlist</span>
-                      <div class="qty"><?= count($wishlist) ?></div>
-                    </a>
-                    <div class="cart-dropdown">
-                      <div class="cart-list">
-                        <?php if (empty($wishlist)): ?>
-                          <p class="text-center">Your wishlist is empty</p>
-                        <?php else: ?>
-                          <?php foreach ($wishlist as $product_id => $product): 
-                            $productName = htmlspecialchars($product['name']);
-                            $productImage = htmlspecialchars($product['image']);
-                            $price = (float) $product['price'];
-                          ?>
-                          <div class="product-widget">
-                            <div class="product-img">
-                              <img src="<?= $productImage ?>" alt="<?= $productName ?>">
-                            </div>
-                            <div class="product-body">
-                              <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
-                              <h4 class="product-price"><?= number_format($price, 2) ?> TND</h4>
-                            </div>
-                            <form method="post">
-                              <input type="hidden" name="product_id" value="<?= $product_id ?>">
-                              <input type="hidden" name="action" value="remove">
-                              <button class="delete" type="submit"><i class="fa fa-close"></i></button>
-                            </form>
-                          </div>
-                          <?php endforeach; ?>
-                        <?php endif; ?>
-                      </div>
-
-                      <div class="cart-btns">
-                        <a href="/electro/pages/wishlist.php">View Wishlist</a>
-                      </div>
-                    </div>
-                  </div>
-
-								<!-- /Wishlist -->
-
-								<?php
-									session_start();
-									$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
-									$totalQuantity = 0;
-									$totalPrice = 0.0;
-									?>
-
-									<!-- Cart -->
-									<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Your Cart</span>
-										<div class="qty"><?= count($cart) ?></div>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-										<?php if (empty($cart)): ?>
-											<p class="text-center">Cart is empty</p>
-										<?php else: ?>
-											<?php foreach ($cart as $product): 
-											$productName = htmlspecialchars($product['name']);
-											$productImage = htmlspecialchars($product['image']);
-											$price = (float) $product['price'];
-											$quantity = (int) $product['quantity'];
-											$subtotal = $price * $quantity;
-											$totalQuantity += $quantity;
-											$totalPrice += $subtotal;
-											?>
-                        <div class="product-widget">
-                            <div class="product-img">
-                              <img src="<?= $productImage ?>" alt="<?= $productName ?>">
-                            </div>
-                            <div class="product-body">
-                              <h3 class="product-name"><a href="#"><?= $productName ?></a></h3>
-                              <h4 class="product-price"><span class="qty"><?= $quantity ?>x</span><?= number_format($price, 2) ?> TND</h4>
-                            </div>
-                            <form method="post">
-                              <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                              <input type="hidden" name="action" value="remove">
-                              <button class="delete" type="submit"><i class="fa fa-close"></i></button>
-                            </form>
-                        </div>
-											<?php endforeach; ?>
-										<?php endif; ?>
-										</div>
-
-                      <div class="cart-summary">
-                        <small><?= $totalQuantity ?> Item(s) selected</small>
-                        <h5>SUBTOTAL: <?= number_format($totalPrice, 2) ?> TND</h5>
-                      </div>
-										<div class="cart-btns">
-                      <a href="/electro/pages/cart.php">View Cart</a>
-                      <a href="/electro/pages/checkout.php">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</div>
-									</div>
-									<!-- /Cart -->
-
-
-								
-							</div>
-						</div>
-						<!-- /ACCOUNT -->
-					</div>
-					<!-- row -->
-				</div>
-				<!-- container -->
-			</div>
-			<!-- /MAIN HEADER -->
-             <!-- NAVIGATION -->
-		<nav id="navigation">
-			<!-- container -->
-			<div class="container">
-				<!-- responsive-nav -->
-				<div id="responsive-nav">
-					<!-- NAV -->
-					<ul class="main-nav nav navbar-nav">
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><a href="/electro">Home</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'allproducts.php' ? 'active' : '' ?>"><a href="/electro/pages/allproducts.php">Products</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'laptop.php' ? 'active' : '' ?>"><a href="/electro/pages/laptop.php">Laptop</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'cameras.php' ? 'active' : '' ?>"><a href="/electro/pages/cameras.php">Cameras</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'accessories.php' ? 'active' : '' ?>"><a href="/electro/pages/accessories.php">Accessories</a></li>
-						<li class="<?= basename($_SERVER['PHP_SELF']) == 'smartphone.php' ? 'active' : '' ?>"><a href="/electro/pages/smartphone.php">Smartphones</a></li>
-            <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-              <li class="<?= basename($_SERVER['PHP_SELF']) == 'commande.php' ? 'active' : '' ?>"><a href="/electro/pages/commande.php">Commandes</a></li>
-            <?php endif; ?>
-						</ul>
-
-					<!-- /NAV -->
-				</div>
-				<!-- /responsive-nav -->
-			</div>
-			
-			<!-- /container -->
-		</nav>
-		<!-- /NAVIGATION -->
-		</header>
+  </header>
 		<!-- /HEADER -->

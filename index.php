@@ -40,7 +40,9 @@
     <body>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/electro/pages/includes/header.php'); ?>
 
+
     <?php
+
 
 if (isset($_SESSION['flash_message'])) {
     echo '
